@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 contract Decentratwitter is ERC721URIStorage {
    uint256 public tokenCount;
    uint256 public postCount;
+   mapping(uint256 => Post) public posts;
+   mapping(address => uint256) public profiles;
 
    struct Post {
       uint256 id;
@@ -14,6 +16,19 @@ contract Decentratwitter is ERC721URIStorage {
       uint256 tipAmount;
       address payable author;
    }
+
+   event PostCreated(
+      uint256 id,
+      string hash,
+      uint256 tipAmount,
+      address payable author
+   );
+   event PostTipped(
+      uint256 id,
+      string hash,
+      uint256 tipAmount,
+      address payable author
+   );
 
    constructor() ERC721("Decentratwitter", "DAPP"){}
 }
