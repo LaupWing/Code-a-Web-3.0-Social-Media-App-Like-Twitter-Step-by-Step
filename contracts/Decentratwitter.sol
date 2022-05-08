@@ -31,4 +31,11 @@ contract Decentratwitter is ERC721URIStorage {
    );
 
    constructor() ERC721("Decentratwitter", "DAPP"){}
+
+   function mint(string memory _tokenURI) external returns(uint256){
+      tokenCount++;
+      _safeMint(msg.sender, tokenCount);
+      _setTokenURI(tokenCount, _tokenURI);
+      return tokenCount;
+   }
 }
