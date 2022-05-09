@@ -42,10 +42,10 @@ describe("Decentratwitter", function () {
          await decentratwitter.connect(user1).mint(URI)
          expect(await decentratwitter.profiles(user1.address)).to.equal(2)
 
-         await decentratwitter.connect(user1).setProfile(2)
+         await decentratwitter.connect(user1).setProfile(1)
          expect(await decentratwitter.profiles(user1.address)).to.equal(1)
 
-         await expect(decentratwitter.connect(user2).setProfile(2)).to.be.revertedWith('Must own nft you want to select as your profile')
+         await expect(decentratwitter.connect(user2).setProfile(2)).to.be.revertedWith('Must own the nft you want to select as profile')
       })
    })
 })
