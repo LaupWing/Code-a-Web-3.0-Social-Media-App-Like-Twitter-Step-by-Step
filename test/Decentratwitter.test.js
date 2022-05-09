@@ -48,4 +48,29 @@ describe("Decentratwitter", function () {
          await expect(decentratwitter.connect(user2).setProfile(2)).to.be.revertedWith('Must own the nft you want to select as profile')
       })
    })
+   describe('Tipping posts', async () => {
+      it("Should allow users to tip posts and track each posts tip amount", async function () {
+         await decentratwitter.connect(user1).uploadPost(postHash)
+         const initAuthorBalance = await ethers.provider.getBalance(user1.address)
+         const tipAmount = ethers.utils.parseEther("1")
+         await expect(decentratwitter.connect(user2).tipPostOwner(1, { value: tipAmount }))
+            .to.emit(decentratwitter, "PostTipped")
+            .withArgs(
+               1,
+               postHash,
+               tipAmount,
+               user1.address
+            )
+         const post = await decentratwitter.posts(1)
+         expect(post.tipAmount).to.equal(tipAmount)
+         const finalAuthorBalance = await ethers.provider.getBalance(user1.address)
+         expect(finalAuthorBalance).to.equal(initAuthorBalance.add(tipAmount))
+         await expect(
+            decentratwitter.connect(user2).tipPostOwner(2)
+         ).to.be.revertedWith("Invalid post id")
+         await expect(
+            decentratwitter.connect(user1).tipPostOwner(1)
+         ).to.be.revertedWith("Cannot tip your own post")
+      })
+   })
 })
