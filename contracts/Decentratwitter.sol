@@ -47,4 +47,17 @@ contract Decentratwitter is ERC721URIStorage {
       );
       profiles[msg.sender] = _id;
    }
+
+   function tipPostOwner(uint256 _id) external payable{
+      require(_id > 0 && _id <= postCount, "Invalid post id");
+
+      Post memory _post = posts[_id];
+      require(_post.author != msg.sender, "Cannot tip your own post");
+      _post.author.transfer(msg.value);
+      _post.tipAmount += msg.value;
+
+      posts[_id] = _post;
+
+      emit PostTipped(_id, _post.hash, _post.tipAmount, _post.author);
+   }
 }
