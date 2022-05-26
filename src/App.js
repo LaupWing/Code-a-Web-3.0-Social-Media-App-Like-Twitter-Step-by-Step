@@ -12,7 +12,6 @@ import {
  import { Spinner, Navbar, Nav, Button, Container } from 'react-bootstrap'
  import Home from './Home.js'
  import Profile from './Profile.js'
- import './App.css';
 
 function App() {
    const [loading, setLoading] = useState(true)
