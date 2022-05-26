@@ -37,7 +37,9 @@ function App() {
    }
 
    const loadContract = async (signer)=>{
-
+      const contract = new ethers.Contract(DecentratwitterAddress.adddress, DecentratwitterAbi.abi. signer)
+      setContract(contract)
+      setLoading(false)
    }
 
    return (
