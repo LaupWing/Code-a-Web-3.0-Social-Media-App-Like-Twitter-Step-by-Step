@@ -18,6 +18,28 @@ function App() {
    const [account, setAccount] = useState(null)
    const [contract, setContract] = useState({})
 
+   const web3Handler = async () =>{
+      let accounts = await window.ethereum.request({method: 'eth_requestAccounts'})
+
+      setAccount(accounts[0])
+
+      window.ethereum.on('chainChanged', ()=>{
+         window.location.reload()
+      })
+      window.ethereum.on('accountsChanged', ()=>{
+         setLoading(true)
+         web3Handler()
+      })
+
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      const signer = provider.getSigner()
+      loadContract(signer)
+   }
+
+   const loadContract = async (signer)=>{
+
+   }
+
    return (
       <BrowserRouter>
          <div className="App">
