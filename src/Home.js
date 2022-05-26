@@ -7,6 +7,39 @@ const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 const Home = ({ contract }) => {
    const [loading, setLoading] = useState(true)
+   const [hasProfile, setHasProfile] = useState(false)
+   const loadPosts = async () =>{
+      const balance = await contract.balanceOf(account)
+      setHasProfile(()=> balance > 0)
+
+      const results = await contract.getAllPosts()
+      let posts = await Promise.all(results.map(async i=>{
+         let response = await fetch(`https://ipfs.infura.io/ipfs/${i.hash}`)
+         const metadataPost = await response.json()
+
+         const nftId = await contract.profiles(i.author)
+         const uri = await contract.tokenURI(nftId)
+
+         response = await fetch(uri)
+         const metadataProfile = await response.json()
+
+         const author = {
+            address: i.author,
+            username: metadataProfile.username,
+            avatar: metadataProfile.avatar
+         }
+         return {
+            id: i.id,
+            content: metadataPost.post,
+            tipAmount: i.tipAmount,
+            author
+         }
+      }))
+
+      posts = posts.sort((a,b)=> b.tipAmount - a.tipAmount)
+      setLoading(false)
+   }
+
    if (loading) return (
       <div className='text-center'>
          <main style={{ padding: "1rem 0" }}>
