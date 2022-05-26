@@ -8,6 +8,8 @@ const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 const Home = ({ contract }) => {
    const [loading, setLoading] = useState(true)
    const [hasProfile, setHasProfile] = useState(false)
+   const [posts, setPosts] = useState(false)
+
    const loadPosts = async () =>{
       const balance = await contract.balanceOf(account)
       setHasProfile(()=> balance > 0)
@@ -38,7 +40,14 @@ const Home = ({ contract }) => {
 
       posts = posts.sort((a,b)=> b.tipAmount - a.tipAmount)
       setLoading(false)
+      setPosts(posts)
    }
+
+   useEffect(()=>{
+      if(!posts){
+         loadPosts()
+      }
+   },[])
 
    if (loading) return (
       <div className='text-center'>
