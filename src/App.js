@@ -15,6 +15,10 @@ import {
  import './App.css';
 
 function App() {
+   const [loading, setLoading] = useState(true)
+   const [account, setAccount] = useState(null)
+   const [contract, setContract] = useState({})
+
    return (
       <BrowserRouter>
          <div className="App">
