@@ -1,25 +1,75 @@
-import logo from './logo.svg';
-import './App.css';
+
+import {
+   Link,
+   BrowserRouter,
+   Routes,
+   Route
+ } from "react-router-dom";
+ import { useState, useEffect } from 'react'
+ import { ethers } from "ethers"
+ import DecentratwitterAbi from './contractsData/decentratwitter.json'
+ import DecentratwitterAddress from './contractsData/decentratwitter-address.json'
+ import { Spinner, Navbar, Nav, Button, Container } from 'react-bootstrap'
+ import Home from './Home.js'
+ import Profile from './Profile.js'
+ import './App.css';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+   return (
+      <BrowserRouter>
+         <div className="App">
+            <>
+               <Navbar expand="lg" bg="secondary" variant="dark">
+                  <Container>
+                     <Navbar.Brand href="http://www.dappuniversity.com/bootcamp">
+                        &nbsp; Decentratwitter
+                     </Navbar.Brand>
+                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                     <Navbar.Collapse id="responsive-navbar-nav">
+                        <Nav className="me-auto">
+                           <Nav.Link as={Link} to="/">Home</Nav.Link>
+                           <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
+                        </Nav>
+                        <Nav>
+                           {account ? (
+                              <Nav.Link
+                                 href={`https://etherscan.io/address/${account}`}
+                                 target="_blank"
+                                 rel="noopener noreferrer"
+                                 className="button nav-button btn-sm mx-4">
+                                 <Button variant="outline-light">
+                                    {account.slice(0, 5) + '...' + account.slice(38, 42)}
+                                 </Button>
+
+                              </Nav.Link>
+                           ) : (
+                              <Button onClick={web3Handler} variant="outline-light">Connect Wallet</Button>
+                           )}
+                        </Nav>
+                     </Navbar.Collapse>
+                  </Container>
+               </Navbar>
+            </>
+            <div>
+               {loading ? (
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+                     <Spinner animation="border" style={{ display: 'flex' }} />
+                     <p className='mx-3 my-0'>Awaiting Metamask Connection...</p>
+                  </div>
+               ) : (
+                  <Routes>
+                     <Route path="/" element={
+                        <Home contract={contract} />
+                     } />
+                     <Route path="/profile" element={
+                        <Profile contract={contract} />
+                     } />
+                  </Routes>
+               )}
+            </div>
+         </div>
+      </BrowserRouter>
+   )
 }
 
 export default App;
