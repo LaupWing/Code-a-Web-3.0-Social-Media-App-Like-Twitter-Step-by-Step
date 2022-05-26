@@ -63,6 +63,10 @@ const Home = ({ contract }) => {
       await (await contract.uploadPost(hash)).wait()
       loadPosts()
    }
+   const tip = async (post) => {
+      await (await contract.tipPostOwner(post.id, { value: ethers.utils.parseEther("0.1") })).wait()
+      loadPosts()
+  }
 
    if (loading) return (
       <div className='text-center'>
