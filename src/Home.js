@@ -9,13 +9,14 @@ const Home = ({ contract }) => {
    const [loading, setLoading] = useState(true)
    const [hasProfile, setHasProfile] = useState(false)
    const [posts, setPosts] = useState(false)
+   const [post, setPost] = useState('')
 
-   const loadPosts = async () =>{
+   const loadPosts = async () => {
       const balance = await contract.balanceOf(account)
-      setHasProfile(()=> balance > 0)
+      setHasProfile(() => balance > 0)
 
       const results = await contract.getAllPosts()
-      let posts = await Promise.all(results.map(async i=>{
+      let posts = await Promise.all(results.map(async i => {
          let response = await fetch(`https://ipfs.infura.io/ipfs/${i.hash}`)
          const metadataPost = await response.json()
 
@@ -38,16 +39,30 @@ const Home = ({ contract }) => {
          }
       }))
 
-      posts = posts.sort((a,b)=> b.tipAmount - a.tipAmount)
+      posts = posts.sort((a, b) => b.tipAmount - a.tipAmount)
       setLoading(false)
       setPosts(posts)
    }
 
-   useEffect(()=>{
-      if(!posts){
+   useEffect(() => {
+      if (!posts) {
          loadPosts()
       }
-   },[])
+   }, [])
+
+   const uploadPost = async () => {
+      if (!post) return
+      let hash
+      try {
+         const result = await client.add(JSON.stringify({ post }))
+         setLoading(true)
+         hash = result.path
+      } catch (error) {
+         window.alert("ipfs image upload error: ", error)
+      }
+      await (await contract.uploadPost(hash)).wait()
+      loadPosts()
+   }
 
    if (loading) return (
       <div className='text-center'>
